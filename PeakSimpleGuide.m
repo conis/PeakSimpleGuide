@@ -16,11 +16,11 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-      [self setDefaults];
-    }
-    return self;
+  self = [super initWithFrame:frame];
+  if (self) {
+    [self setDefaults];
+  }
+  return self;
 }
 
 - (id) init{
@@ -50,9 +50,12 @@
   self.scrollView.delegate = self;
   self.scrollView.showsHorizontalScrollIndicator = NO;
   self.scrollView.showsVerticalScrollIndicator = NO;
+  self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
   [self addSubview: self.scrollView];
   
   self.pageControl = [[UIPageControl alloc] init];
+  self.pageControl.frame = CGRectMake(0, self.bounds.size.height - self.noteHeight - 36 / 2, self.frame.size.width, 36);
+  self.pageControl.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
   [self addSubview: self.pageControl];
 }
 
@@ -65,6 +68,7 @@
   UIImageView *imgView = [[UIImageView alloc] initWithImage: image];
   imgView.contentMode = UIViewContentModeTopLeft;
   imgView.frame = CGRectMake(left, 0, width, height);
+  imgView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
   [self.scrollView addSubview: imgView];
   
   //添加memo
@@ -75,6 +79,7 @@
   lblNote.textAlignment = NSTextAlignmentCenter;
   lblNote.frame = CGRectMake(left, height - self.noteHeight, width, self.noteHeight);
   lblNote.textColor = self.noteTextColor;
+  lblNote.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
   [self.scrollView addSubview: lblNote];
   
   //重新设置scrollView
@@ -106,12 +111,13 @@
 
 -(void) layoutSubviews{
   [super layoutSubviews];
-  self.pageControl.frame = CGRectMake(0, self.bounds.size.height - self.noteHeight - 36 / 2, self.frame.size.width, 36);
-  self.scrollView.frame = self.bounds;
+  //self.pageControl.frame = CGRectMake(0, self.bounds.size.height - self.noteHeight - 36 / 2, self.frame.size.width, 36);
+  //self.scrollView.frame = self.bounds;
 }
 
 //在父视图中显示
 -(void) showInView:(UIView *)parent{
+  self.frame = parent.bounds;
   [parent addSubview: self];
 }
 @end
