@@ -51,6 +51,7 @@
   self.scrollView.showsHorizontalScrollIndicator = NO;
   self.scrollView.showsVerticalScrollIndicator = NO;
   self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+  self.scrollView.alwaysBounceVertical = NO;
   [self addSubview: self.scrollView];
   
   self.pageControl = [[UIPageControl alloc] init];
