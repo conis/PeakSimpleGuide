@@ -13,6 +13,7 @@
 @end
 
 @implementation PeakSimpleGuide
+static NSString *kGuideVersion = @"peakSimpleGuide_version";
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -40,9 +41,10 @@
 }
 
 -(void) setDefaults{
+  self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
   self.noteHeight = 60;
   self.noteFont = [UIFont systemFontOfSize: 20];
-  self.noteBackgroundColor = [UIColor darkGrayColor];
+  self.noteBackgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
   self.noteTextColor = [UIColor whiteColor];
   
   self.scrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
@@ -61,7 +63,7 @@
 }
 
 //添加一个guide
--(void) addWithImage:(UIImage *)image note:(NSString *)note{
+-(void) addGuideWithImage:(UIImage *)image note:(NSString *)note{
   CGFloat left = self.pageControl.numberOfPages * self.frame.size.width;
   CGFloat width = self.bounds.size.width;
   CGFloat height = self.bounds.size.height;
@@ -85,7 +87,16 @@
   
   //重新设置scrollView
   self.pageControl.numberOfPages ++;
-  self.scrollView.contentSize = CGSizeMake(width * self.pageControl.numberOfPages, height);
+  self.scrollView.contentSize = CGSizeMake(width * self.pageControl.numberOfPages, 0);
+}
+
+//批量添加guide
+-(void) bulkAddGuide:(NSInteger)count imageName:(NSString *)imageName noteName:(NSString *)noteName{
+    for (int i = 0; i < count; i ++) {
+      NSString *note = [NSString stringWithFormat:noteName, i];
+      note = NSLocalizedString(note, nil);
+      [self addGuideWithImage:[UIImage imageNamed: [NSString stringWithFormat: imageName, i]] note: note];
+    };
 }
 
 //滚动
@@ -98,6 +109,8 @@
     [UIView animateWithDuration:0.3 animations:^{
       self.alpha = 0;
     } completion:^(BOOL finished) {
+      //保存已经显示过guide的信息
+      [self save];
       //通知完成
       if(self.delegate && [self.delegate respondsToSelector: @selector(peakSimpleGuideDidFinish)]){
         [self.delegate peakSimpleGuideDidFinish];
@@ -120,5 +133,36 @@
 -(void) showInView:(UIView *)parent{
   self.frame = parent.bounds;
   [parent addSubview: self];
+}
+
+//获取当前版本
+-(NSString *) currentVersion{
+  return [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];;
+}
+
+//保存显示guide的版本信息
+-(void) save{
+  NSUserDefaults  *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults setValue:[self currentVersion] forKey:kGuideVersion];
+  [defaults synchronize];
+}
+
+
+-(NSString *) getGuideShownVersion{
+  NSUserDefaults  *defaults = [NSUserDefaults standardUserDefaults];
+  return [defaults stringForKey: kGuideVersion];
+}
+
+//guide是否已经显示过了，不管是不是当前版本
+-(BOOL) guideShown{
+  NSString *shownVersion = [self getGuideShownVersion];
+  return shownVersion != nil;
+}
+
+//当前版本是否已经显示过guide
+-(BOOL) guideShownAtCurrentVersion{
+  NSString *shownVersion = [self getGuideShownVersion];
+  NSString *currentVersion = [self currentVersion];
+  return [shownVersion isEqualToString: currentVersion];
 }
 @end

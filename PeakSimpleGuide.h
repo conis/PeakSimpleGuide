@@ -15,6 +15,10 @@
 @end
 @interface PeakSimpleGuide : UIView<UIScrollViewDelegate>
 
+//是否显示过guide，不管哪一个版本
+@property (nonatomic, readonly) BOOL guideShown;
+//当前版本的guide是否已经显示
+@property (nonatomic, readonly) BOOL guideShownAtCurrentVersion;
 //委托
 @property (nonatomic, weak) id<PeakSimpleGuideDelegate> delegate;
 //介绍信息的高度
@@ -28,5 +32,7 @@
 //在哪个View中显示
 -(void) showInView: (UIView *) parent;
 //添加一组图
--(void) addWithImage: (UIImage *) image note: (NSString *) note;
+-(void) addGuideWithImage: (UIImage *) image note: (NSString *) note;
+//批量添加guide
+-(void) bulkAddGuide: (NSInteger) count imageName: (NSString *) imageName noteName: (NSString *) noteName;
 @end
