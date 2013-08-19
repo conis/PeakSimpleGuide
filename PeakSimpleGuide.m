@@ -83,6 +83,7 @@ static NSString *kGuideVersion = @"peakSimpleGuide_version";
   lblNote.frame = CGRectMake(left, height - self.noteHeight, width, self.noteHeight);
   lblNote.textColor = self.noteTextColor;
   lblNote.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+  lblNote.numberOfLines = 0;
   [self.scrollView addSubview: lblNote];
   
   //重新设置scrollView
